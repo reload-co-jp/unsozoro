@@ -90,6 +90,15 @@ export const GameMap = ({ className, route, checkpoints, currentLocation, visite
 
   useEffect(() => {
     const instance = map.current
+    if (!instance || !container.current) return
+    // 画面回転などでコンテナサイズが変わった際、Leafletに追従させてズレを防ぐ
+    const observer = new ResizeObserver(() => instance.invalidateSize())
+    observer.observe(container.current)
+    return () => observer.disconnect()
+  }, [mapReady])
+
+  useEffect(() => {
+    const instance = map.current
     const leafletLib = L.current
     if (!instance || !leafletLib || !route.length) return
     const courseBounds: Leaflet.LatLngBoundsExpression = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]

@@ -1,5 +1,5 @@
-.app { min-height: 100dvh; overflow: hidden; position: relative; }
-.map { height: 100dvh; inset: 0; position: absolute !important; width: 100%; z-index: 0; }
+.app { min-height: 100svh; overflow: hidden; position: relative; }
+.map { height: 100svh; inset: 0; position: absolute !important; width: 100%; z-index: 0; }
 .waiting { align-items: center; color: #ecf3ee; display: flex; flex-direction: column; gap: 12px; inset: 0; justify-content: center; position: absolute; }
 .waiting p { margin: 0; }
 .topbar { align-items: center; display: flex; justify-content: space-between; left: 0; padding: 16px; pointer-events: none; position: absolute; right: 0; top: 0; z-index: 20; }
