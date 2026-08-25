@@ -1,24 +1,6 @@
-import { Footer, Header, Main, Title } from "@/components/elements/layout"
 import "./reset.css"
 
-export const metadata = {
-  title: "Page title",
-  description: "Page description",
-}
+export const metadata = { title: "Unsozoro | 歩いて見つける散歩ゲーム", description: "街を歩いて、まだ見ぬ場所を開拓する位置情報ゲーム" }
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <html lang="ja">
-      <body>
-        <Header>
-          <Title>Page title</Title>
-        </Header>
-        <Main>{children}</Main>
-        <Footer>
-          <p>&copy; My organization</p>
-        </Footer>
-      </body>
-    </html>
-  )
-}
+const RootLayout = ({ children }: { children: React.ReactNode }) => <html lang="ja"><body>{children}</body></html>
 export default RootLayout

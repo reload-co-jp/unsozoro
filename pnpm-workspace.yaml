@@ -12,3 +12,5 @@ minimumReleaseAgeExclude:
   - '@next/swc-win32-arm64-msvc@16.2.10'
   - '@next/swc-win32-x64-msvc@16.2.10'
   - next@16.2.10
+  - '@maplibre/maplibre-gl-style-spec@26.3.0'
+  - maplibre-gl@6.6.0
