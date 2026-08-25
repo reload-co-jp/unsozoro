@@ -127,12 +127,13 @@ export default function Page() {
   }
 
   const bounds = useMemo(() => course ? courseBounds(course) : null, [course])
+  const route = useMemo(() => course ? routeCoordinates(course) : [], [course])
   const totalCells = bounds ? Math.ceil((bounds[2] - bounds[0]) / CELL_SIZE) * Math.ceil((bounds[3] - bounds[1]) / CELL_SIZE) : 0
   const exploration = game && totalCells ? Math.round((game.visitedCells.length / totalCells) * 100) : 0
   const checkpoints: MapCheckpoint[] = course && game ? course.spots.map(({ spot }) => ({ id: spot.id, name: spot.name, longitude: spot.longitude, latitude: spot.latitude, found: game.discoveredIds.includes(spot.id) })) : []
 
   return <main className={styles.app}>
-    {course && game && bounds ? <GameMap key={course.id} className={styles.map} route={routeCoordinates(course)} checkpoints={checkpoints} currentLocation={currentPosition ? [currentPosition.longitude, currentPosition.latitude] : null} visitedCells={new Set(game.visitedCells)} cellSize={CELL_SIZE} bounds={bounds} /> : <div className={styles.waiting}><Compass size={32} /><p>{loading ? "コースを読み込み中" : "散歩コースを選択"}</p></div>}
+    {course && game && bounds ? <GameMap key={course.id} className={styles.map} route={route} checkpoints={checkpoints} currentLocation={currentPosition ? [currentPosition.longitude, currentPosition.latitude] : null} visitedCells={new Set(game.visitedCells)} cellSize={CELL_SIZE} bounds={bounds} /> : <div className={styles.waiting}><Compass size={32} /><p>{loading ? "コースを読み込み中" : "散歩コースを選択"}</p></div>}
     {course && game && <>
       <header className={styles.topbar}><button className={styles.iconButton} onClick={() => setMenuOpen(true)} aria-label="メニュー"><Menu /></button><div className={styles.courseTitle}><span>{course.areaName}</span><strong>{course.title}</strong></div><button className={styles.iconButton} onClick={beginLocationTracking} aria-label="現在地を取得"><Crosshair /></button></header>
       <section className={styles.hud} aria-label="進行状況"><div><span>CHECKPOINT</span><strong>{game.discoveredIds.length} <i>/</i> {course.spots.length}</strong></div><div><span>EXPLORED</span><strong>{exploration}<i>%</i></strong></div></section>
