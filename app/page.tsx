@@ -14,7 +14,7 @@ const CHECKPOINT_DISTANCE_METERS = 50
 const ACTIVE_COURSE_KEY = "unsozoro:active-course"
 
 type CourseSummary = { id: number; title: string; shortDescription: string; distanceMeters: number; durationMinutes: number; areaName: string; mainImageUrl: string }
-type Course = CourseSummary & { routeGeoJson: { coordinates: [number, number][] }; spots: { spot: { id: number; name: string; latitude: number; longitude: number } }[] }
+type Course = CourseSummary & { routeGeoJson?: { coordinates: [number, number][] }; spots: { spot: { id: number; name: string; latitude: number; longitude: number } }[] }
 type Coordinates = { latitude: number; longitude: number }
 type Position = Coordinates & { accuracy: number; timestamp: number }
 
@@ -26,8 +26,9 @@ const distanceInMeters = (first: Coordinates, second: Coordinates) => {
   const a = Math.sin(latitude / 2) ** 2 + Math.cos(radians(first.latitude)) * Math.cos(radians(second.latitude)) * Math.sin(longitude / 2) ** 2
   return 12742000 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
+const routeCoordinates = (course: Course): [number, number][] => course.routeGeoJson?.coordinates ?? course.spots.map(({ spot }) => [spot.longitude, spot.latitude] as [number, number])
 const courseBounds = (course: Course): [number, number, number, number] => {
-  const points = [...course.routeGeoJson.coordinates, ...course.spots.map(({ spot }) => [spot.longitude, spot.latitude] as [number, number])]
+  const points = [...routeCoordinates(course), ...course.spots.map(({ spot }) => [spot.longitude, spot.latitude] as [number, number])]
   const longitudes = points.map(([longitude]) => longitude)
   const latitudes = points.map(([, latitude]) => latitude)
   const padding = 0.0012
@@ -131,7 +132,7 @@ export default function Page() {
   const checkpoints: MapCheckpoint[] = course && game ? course.spots.map(({ spot }) => ({ id: spot.id, name: spot.name, longitude: spot.longitude, latitude: spot.latitude, found: game.discoveredIds.includes(spot.id) })) : []
 
   return <main className={styles.app}>
-    {course && game && bounds ? <GameMap key={course.id} className={styles.map} route={course.routeGeoJson.coordinates} checkpoints={checkpoints} currentLocation={currentPosition ? [currentPosition.longitude, currentPosition.latitude] : null} visitedCells={new Set(game.visitedCells)} cellSize={CELL_SIZE} bounds={bounds} /> : <div className={styles.waiting}><Compass size={32} /><p>{loading ? "コースを読み込み中" : "散歩コースを選択"}</p></div>}
+    {course && game && bounds ? <GameMap key={course.id} className={styles.map} route={routeCoordinates(course)} checkpoints={checkpoints} currentLocation={currentPosition ? [currentPosition.longitude, currentPosition.latitude] : null} visitedCells={new Set(game.visitedCells)} cellSize={CELL_SIZE} bounds={bounds} /> : <div className={styles.waiting}><Compass size={32} /><p>{loading ? "コースを読み込み中" : "散歩コースを選択"}</p></div>}
     {course && game && <>
       <header className={styles.topbar}><button className={styles.iconButton} onClick={() => setMenuOpen(true)} aria-label="メニュー"><Menu /></button><div className={styles.courseTitle}><span>{course.areaName}</span><strong>{course.title}</strong></div><button className={styles.iconButton} onClick={beginLocationTracking} aria-label="現在地を取得"><Crosshair /></button></header>
       <section className={styles.hud} aria-label="進行状況"><div><span>CHECKPOINT</span><strong>{game.discoveredIds.length} <i>/</i> {course.spots.length}</strong></div><div><span>EXPLORED</span><strong>{exploration}<i>%</i></strong></div></section>
