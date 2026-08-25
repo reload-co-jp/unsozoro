@@ -1,4 +1,5 @@
 import "./reset.css"
+import RegisterServiceWorker from "./register-sw"
 
 const title = "Unsozoro | 歩いて見つける散歩ゲーム"
 const description = "街を歩いて、まだ見ぬ場所を開拓する位置情報ゲーム"
@@ -12,9 +13,10 @@ export const metadata = {
   robots: { index: true, follow: true },
   openGraph: { type: "website", locale: "ja_JP", url: "/", siteName: "Unsozoro", title, description },
   twitter: { card: "summary_large_image", title, description },
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Unsozoro" },
 }
 
 export const viewport = { themeColor: "#21282f" }
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => <html lang="ja"><body>{children}</body></html>
+const RootLayout = ({ children }: { children: React.ReactNode }) => <html lang="ja"><body>{children}<RegisterServiceWorker /></body></html>
 export default RootLayout
